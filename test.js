@@ -13,11 +13,15 @@ const filesInPublic = [];
 fs.readdirSync(publicFolder).forEach(function (dirContent) {
   dirContent = path.resolve(publicFolder, dirContent);
   if (fs.statSync(dirContent).isFile()) {
-    filesInPublic.push(dirContent);
+    const obj = { path: dirContent };
+    filesInPublic.push(obj);
   } else if (fs.statSync(dirContent).isDirectory()) {
     fs.readdirSync(dirContent).forEach(function (subDirContent) {
       subDirContent = path.resolve(dirContent, subDirContent);
-      filesInPublic.push(subDirContent);
+      const subDirObj = {
+        path: subDirContent,
+      };
+      filesInPublic.push(subDirObj);
     });
   }
 });
@@ -27,7 +31,7 @@ console.log(filesInPublic);
 const server = http.createServer((req, res) => {
   res.statusCode = 200;
   url.push(req.url);
-  const subArr = filesInPublic.findIndex((element) => element.includes(url));
+  const subArr = filesInPublic.findIndex(() => filesInPublic.includes(url));
   console.log(subArr);
 
   console.log(url);
