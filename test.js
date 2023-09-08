@@ -10,52 +10,17 @@ const filesInPublic = [];
 
 fs.readdirSync(publicFolder).forEach(function (dirContent) {
   dirContent = path.resolve(publicFolder, dirContent);
-  if (fs.statSync(dirContent).isDirectory()) {
-    fs.readdirSync(publicFolder).forEach(function (dirContent) {
-      dirContent = path.resolve(publicFolder, dirContent);
-      filesInPublic.push(dirContent);
-    });
-  }
   if (fs.statSync(dirContent).isFile()) {
     filesInPublic.push(dirContent);
+  } else if (fs.statSync(dirContent).isDirectory()) {
+    fs.readdirSync(dirContent).forEach(function (subDirContent) {
+      subDirContent = path.resolve(dirContent, subDirContent);
+      filesInPublic.push(subDirContent);
+    });
   }
 });
 
 console.log(filesInPublic);
-
-/*
-// Function to get current filenames
-// in directory with "withFileTypes"
-// set to "true"
-
-fileObjs = fs.readdirSync(__dirname, { withFileTypes: true });
-
-console.log('\nCurrent directory files:');
-fileObjs.forEach((file) => {
-  console.log(file);
-});
-*/
-
-/*
-s.readdirSync(publicFolder).forEach(() => {
-  const fileObject = new
-  const pathName = path.resolve();
-  if (fs.statSync(pathName).isDirectory()) {
-    // If it is a directory, recursively call the getFiles function with the directory path and the files array
-
-    getFiles(pathName, filesInPublic);
-  } else {
-    // If it is a file, push the full path to the files array
-    filesInPublic.push(pathName);
-  }
-  return filesInPublic;
-});
-
-*/
-
-/*
-    filesInPublic.push(file);
-  */
 
 /*
 const server = http
