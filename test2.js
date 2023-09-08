@@ -11,12 +11,12 @@ let obj;
 let searchedForURL;
 let searchedForFile;
 let searchedForFileURL;
+let serverdata;
 
 // loop through array to find keyword
 function findKeyword() {
   for (let i = 0; i < filesInPublic.length; i++) {
     const filesInPublicNameWithSlash = `/${filesInPublic[i].name}`;
-    const filesInPublicValue = filesInPublic[i].value;
     if (filesInPublicNameWithSlash === searchedForURL) {
       searchedForFile = filesInPublic[i];
       console.log(
@@ -29,9 +29,14 @@ function findKeyword() {
 
 // Open file
 function openFile() {
-  fs.readFile(searchedForFileURL, function (err, data) {
-    res.write(data);
-    return res.end();
+  fs.readFile(searchedForFileURL, (err, data) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    serverdata = `${data}`;
+    console.log(serverdata);
+    return serverdata;
   });
 }
 
@@ -68,13 +73,25 @@ const server = http.createServer((req, res) => {
   findKeyword(filesInPublic, searchedForURL);
   // return matched file
   searchedForFileURL = searchedForFile.path;
-  console.log(searchedForFile);
+  console.log(searchedForFileURL);
 
-
+  //  openFile(searchedForFileURL, serverdata);
+  fs.readFile(searchedForFileURL, (err, data) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    serverdata = data;
+    console.log(data);
+    res.write(serverdata);
+    res.end();
+  });
   // end server function ?
-  res.end();
+  // res.write();
+
+  // res.end();
   return searchedForURL;
-};
+});
 
 // server listening
 server.listen(port, hostname, () => {
@@ -83,7 +100,7 @@ server.listen(port, hostname, () => {
 
 // open file
 
-
-  function send404(response) {
-    response.writeHead(404, { 'Content-Type': 'text/plain' });
-    response.write('Error 404: Resource not found.');};
+function send404(response) {
+  response.writeHead(404, { 'Content-Type': 'text/plain' });
+  response.write('Error 404: Resource not found.');
+}
