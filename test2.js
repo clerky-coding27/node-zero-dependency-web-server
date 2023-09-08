@@ -1,4 +1,3 @@
-import EventEmitter from 'node:events';
 import * as fs from 'node:fs';
 import path from 'node:path';
 import http from 'http';
@@ -10,18 +9,32 @@ const publicFolder = './public/';
 const filesInPublic = [];
 let obj;
 let searchedForURL;
+let searchedForFile;
+let searchedForFileURL;
 
 // loop through array to find keyword
 function findKeyword() {
   for (let i = 0; i < filesInPublic.length; i++) {
     const filesInPublicNameWithSlash = `/${filesInPublic[i].name}`;
+    const filesInPublicValue = filesInPublic[i].value;
     if (filesInPublicNameWithSlash === searchedForURL) {
+      searchedForFile = filesInPublic[i];
       console.log(
         'found match:' + searchedForURL + ' ' + filesInPublic[i].name,
       );
     }
   }
+  return searchedForFile;
 }
+
+// Open file
+function openFile() {
+  fs.readFile(searchedForFileURL, function (err, data) {
+    res.write(data);
+    return res.end();
+  });
+}
+
 // create server
 
 const server = http.createServer((req, res) => {
@@ -50,23 +63,27 @@ const server = http.createServer((req, res) => {
 
   // receive keyword from url request
   searchedForURL = req.url;
+
+  // find match in files
   findKeyword(filesInPublic, searchedForURL);
+  // return matched file
+  searchedForFileURL = searchedForFile.path;
+  console.log(searchedForFile);
+
+
+  // end server function ?
   res.end();
   return searchedForURL;
-});
+};
 
+// server listening
 server.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
 
-/*
-let objFound = filesInPublic.find((o) => o.name === searchedForURL);
-console.log(objFound);
+// open file
 
-*/
 
-/*
-// look for keyword in array
-let subArr = filesInPublic.findIndex((element) => element.includes(url));
-console.log(subArr);
-*/
+  function send404(response) {
+    response.writeHead(404, { 'Content-Type': 'text/plain' });
+    response.write('Error 404: Resource not found.');};
