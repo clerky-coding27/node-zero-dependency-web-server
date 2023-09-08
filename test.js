@@ -7,13 +7,16 @@ const port = 3000;
 let url = [];
 const publicFolder = './public/';
 const filesInPublic = [];
+let obj;
+let searchedForURL;
 
 // Read all files in public folder and store them in an array
 
 fs.readdirSync(publicFolder).forEach(function (dirContent) {
   dirContent = path.resolve(publicFolder, dirContent);
   if (fs.statSync(dirContent).isFile()) {
-    const obj = { path: dirContent };
+    obj = { path: dirContent };
+    obj.name = path.basename(obj.path);
     filesInPublic.push(obj);
   } else if (fs.statSync(dirContent).isDirectory()) {
     fs.readdirSync(dirContent).forEach(function (subDirContent) {
@@ -21,6 +24,7 @@ fs.readdirSync(publicFolder).forEach(function (dirContent) {
       const subDirObj = {
         path: subDirContent,
       };
+      subDirObj.name = path.basename(subDirObj.path);
       filesInPublic.push(subDirObj);
     });
   }
@@ -30,17 +34,34 @@ console.log(filesInPublic);
 // create server & receive keyword from url request
 const server = http.createServer((req, res) => {
   res.statusCode = 200;
-  url.push(req.url);
-  const subArr = filesInPublic.findIndex(() => filesInPublic.includes(url));
-  console.log(subArr);
+  // url.push(req.url);
+  searchedForURL = req.url;
+  console.log(searchedForURL);
 
-  console.log(url);
   res.end();
-  return;
+  return searchedForURL;
 });
 server.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
+
+/*
+function matchKeywords() {
+  for (let i = 0; i < filesInPublic.length; i++) {
+    console.log(filesInPublic.name[i]);
+    if (filesInPublic.name[i] === searchedForURL) {
+      console.log(
+        'found match:' + searchedForURL + ' ' + filesInPublic.name[i],
+      );
+    }
+  }
+}
+
+matchKeywords();
+
+*/
+
+// loop through array to find keyword
 
 /*
 // look for keyword in array
