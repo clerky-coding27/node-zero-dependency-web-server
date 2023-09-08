@@ -4,9 +4,11 @@ import http from 'http';
 
 const hostname = '127.0.0.1';
 const port = 3000;
-const url = [];
+let url = [];
 const publicFolder = './public/';
 const filesInPublic = [];
+
+// Read all files in public folder and store them in an array
 
 fs.readdirSync(publicFolder).forEach(function (dirContent) {
   dirContent = path.resolve(publicFolder, dirContent);
@@ -19,29 +21,25 @@ fs.readdirSync(publicFolder).forEach(function (dirContent) {
     });
   }
 });
-
 console.log(filesInPublic);
 
-/*
-const server = http
-  .createServer((req, res) => {
-    url.push(req.url);
-    console.log(req.url)
-    fs.readFile('/public' + req.url, function (err, filedata) {
-      if (err) {
-        //   Handling error
-        res.writeHead(404);
-        res.end(JSON.stringify(err));
-        return;
-      }
-      //   serving file to the server
-      res.writeHead(200);
-      res.end(filedata);
-    });
-  })
-  .listen(80, 'localhost');
+// create server & receive keyword from url request
+const server = http.createServer((req, res) => {
+  res.statusCode = 200;
+  url.push(req.url);
+  const subArr = filesInPublic.findIndex((element) => element.includes(url));
+  console.log(subArr);
 
+  console.log(url);
+  res.end();
+  return;
+});
 server.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
+
+/*
+// look for keyword in array
+let subArr = filesInPublic.findIndex((element) => element.includes(url));
+console.log(subArr);
 */
