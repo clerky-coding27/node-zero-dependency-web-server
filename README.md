@@ -1,6 +1,6 @@
 # Node.js Web Server
 
-Welcome to my Node.js command line program that creates a web server with zero dependencies, leveraging only the UpLeveled ESLint config dependencies in "dependencies" or "devDependencies" in package.json. This lightweight server is designed to serve the content of all files within a directory called "public."
+Welcome to my Node.js command line program that creates a web server with zero dependencies. This lightweight server is designed to serve the content of all files within a directory called "public."
 
 👷 **This project is still under construction** 👷
 
